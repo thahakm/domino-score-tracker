@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dominos Score Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            color: #999;
+        }
+        
+        .input-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .input-section input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .input-section input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        
+        .btn-secondary:hover {
+            background: #e8e8e8;
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 13px;
+            background: none;
+            color: #999;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-small:hover {
+            color: #ff4444;
+        }
+        
+        .no-players {
+            text-align: center;
+            padding: 40px 20px;
+            color: #ccc;
+        }
+        
+        .no-players i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            display: block;
+            opacity: 0.5;
+        }
+        
+        .players-grid {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .player-card {
+            background: #f9f9f9;
+            border: 2px solid #f0f0f0;
+            border-radius: 12px;
+            padding: 16px;
+            transition: all 0.3s;
+        }
+        
+        .player-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+        
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .player-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .player-total {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        
+        .player-total-label {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 4px;
+        }
+        
+        .player-total-value {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .scores-list {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            max-height: 180px;
+            overflow-y: auto;
+            margin-bottom: 12px;
+            padding: 8px 0;
+        }
+        
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+        
+        .score-item:last-child {
+            border-bottom: none;
+        }
+        
+        .score-value {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .empty-scores {
+            text-align: center;
+            color: #ccc;
+            font-size: 13px;
+            padding: 12px 8px;
+        }
+        
+        .score-input-section {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .score-input-section input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .score-input-section input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .score-input-section button {
+            padding: 10px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .score-input-section button:hover {
+            background: #5568d3;
+        }
+        
+        .footer {
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .footer .btn {
+            flex: 1;
+            min-width: 140px;
+            justify-content: center;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+                border-radius: 12px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .footer {
+                flex-direction: column;
+            }
+            
+            .footer .btn {
+                width: 100%;
+            }
+            
+            .player-total-value {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎲 Dominos Tracker</h1>
+            <p>Track scores easily</p>
+            <p>Powerd By Cashew Junction</p>
+        </div>
+        
+        <div class="input-section">
+            <input type="text" id="playerInput" placeholder="Enter player name" autocomplete="off">
+            <button class="btn btn-primary" onclick="addPlayer()">
+                <i class="fas fa-plus"></i> Add
+            </button>
+        </div>
+        
+        <div id="noPlayers" class="no-players">
+            <i class="fas fa-users"></i>
+            <p>Add players to start tracking scores</p>
+        </div>
+        
+        <div id="playersGrid" class="players-grid"></div>
+        
+        <div class="footer">
+            <button class="btn btn-secondary" onclick="resetGame()">
+                <i class="fas fa-redo"></i> Reset
+            </button>
+            <button class="btn btn-secondary" onclick="exportScores()">
+                <i class="fas fa-download"></i> Export
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        const STORAGE_KEY = 'dominos_game_data';
+        
+        function loadGame() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            return saved ? JSON.parse(saved) : { players: {} };
+        }
+        
+        function saveGame(game) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(game));
+        }
+        
+        function addPlayer() {
+            const input = document.getElementById('playerInput');
+            const name = input.value.trim();
+            
+            if (!name) {
+                alert('Please enter a player name');
+                return;
+            }
+            
+            const game = loadGame();
+            if (game.players[name]) {
+                alert('Player already exists');
+                return;
+            }
+            
+            game.players[name] = [];
+            saveGame(game);
+            input.value = '';
+            renderBoard();
+            input.focus();
+        }
+        
+        function removePlayer(name) {
+            if (!confirm(`Remove ${name}?`)) return;
+            const game = loadGame();
+            delete game.players[name];
+            saveGame(game);
+            renderBoard();
+        }
+        
+        function addScore(playerName) {
+            const input = document.querySelector(`#score-${playerName}`);
+            const score = parseInt(input.value);
+            
+            if (isNaN(score) || score < 0) {
+                alert('Enter a valid score (0 or higher)');
+                return;
+            }
+            
+            const game = loadGame();
+            game.players[playerName].push(score);
+            saveGame(game);
+            renderBoard();
+            document.querySelector(`#score-${playerName}`).focus();
+        }
+        
+        function removeScore(playerName, index) {
+            const game = loadGame();
+            game.players[playerName].splice(index, 1);
+            saveGame(game);
+            renderBoard();
+        }
+        
+        function getTotal(scores) {
+            return scores.reduce((sum, val) => sum + val, 0);
+        }
+        
+        function renderBoard() {
+            const game = loadGame();
+            const grid = document.getElementById('playersGrid');
+            const noPlayers = document.getElementById('noPlayers');
+            const players = Object.keys(game.players).sort();
+            
+            if (players.length === 0) {
+                grid.innerHTML = '';
+                noPlayers.style.display = 'block';
+                return;
+            }
+            
+            noPlayers.style.display = 'none';
+            
+            grid.innerHTML = players.map(playerName => {
+                const scores = game.players[playerName];
+                const total = getTotal(scores);
+                
+                return `
+                    <div class="player-card">
+                        <div class="player-header">
+                            <span class="player-name">${playerName}</span>
+                            <button class="btn-small" onclick="removePlayer('${playerName}')" title="Remove player">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="player-total">
+                            <div class="player-total-label">Total</div>
+                            <div class="player-total-value">${total}</div>
+                        </div>
+                        
+                        <div class="scores-list">
+                            ${scores.length === 0 
+                                ? '<div class="empty-scores">No scores yet</div>' 
+                                : scores.map((score, i) => `
+                                    <div class="score-item">
+                                        <span class="score-value">${score}</span>
+                                        <button class="btn-small" onclick="removeScore('${playerName}', ${i})">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                `).join('')
+                            }
+                        </div>
+                        
+                        <div class="score-input-section">
+                            <input type="number" id="score-${playerName}" placeholder="Mark" min="0" />
+                            <button onclick="addScore('${playerName}')">Add</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Focus on first empty score input
+            const firstInput = document.querySelector('.score-input-section input');
+            if (firstInput) setTimeout(() => firstInput.focus(), 100);
+        }
+        
+        function resetGame() {
+            if (!confirm('Reset all scores? This cannot be undone.')) return;
+            localStorage.removeItem(STORAGE_KEY);
+            renderBoard();
+            document.getElementById('playerInput').focus();
+        }
+        
+        function exportScores() {
+            const game = loadGame();
+            const players = Object.keys(game.players).sort();
+            
+            if (players.length === 0) {
+                alert('Add some players first');
+                return;
+            }
+            
+            let csv = 'Player,Scores,Total\n';
+            players.forEach(name => {
+                const scores = game.players[name];
+                const total = getTotal(scores);
+                csv += `"${name}","${scores.join(', ')}",${total}\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `dominos-scores-${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // Enter key to add player
+        document.getElementById('playerInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addPlayer();
+        });
+        
+        // Enter key to add score
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && e.target.id.startsWith('score-')) {
+                const playerName = e.target.id.replace('score-', '');
+                addScore(playerName);
+            }
+        });
+        
+        renderBoard();
+        document.getElementById('playerInput').focus();
+    </script>
+</body>
+</html>
